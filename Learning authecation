@@ -1,0 +1,77 @@
+I NEED TO LEARN THIS FOR UPDATING THE NEGROS ORIENTAL HIGH SCHOOL ENROLMENT SYSTEM 
+AND MORE LOG IN AND SIGN UP AUTHENCATION AND NOW I DOCUMENTARY AND POST MY MAKING AFTER I COMPLETE ON LEARNING ON THIS
+
+1. LOG-IN FIRST IN FIREBASE AND SET UP THIS THINGS
+  - YOU NEED TO CLICK THE AUTHENCATION 
+  - THEN GO TO THE Project Overview THEN PRESS THE Add app THEN SELECT THE WEB OR WEB APP 
+  - THEN MAKE A NAME THEN YOU CAN PASTE THE SCRIPT TAG OF THE FIREBASE AND PASTE ON THE JS FILE 
+
+FILE MANAGEMENT example:
+
+PROJECT FILE
+          |
+          firebase.js
+          log-in.html
+          sign-up.html
+          dashboard.html
+
+2. PASTE THE SCRIPT MODULE ON THE firebase.js
+  - EACH FILE PASTE THIS 
+
+<script type="module">
+  import { auth, db } from "./firebase.js"; // now auth and db are ready to use
+</script>
+
+3. THEN GO TO THE AUTHECATION CENTER THEN GO TO THE SIGN-IN METHOD THEN SELECT THE EMIAL/PASSWORD THEN 
+   ENABLE ONLY THE EMAIL/PASSWORD ON THE UP THEN ALWAYS DIABLE THE EMAIL/LINK BECAUSE THIS IS ONLY A PRACTICE 
+
+4. THEN SAME IN AUTHENCATION GO TO THE SETTING AND GO DOWNA AND PRESS THE AUTHORIZE DOMAIN AND PASTE THIS 127.0.0.1
+
+5. THEN CODE NOW THEN LOGIC IS LIKE THIS FOR ME 
+
+MAKE AN INPUT 
+
+|
+|
+|
+
+MAKE AND BOX FOR ERRORS
+
+|
+|
+|
+
+IMPORT THIS BECAUSE ITS NESSEARY IMPORT
+
+import { auth, db } from "./firebase.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+|
+|
+|
+
+THEN MAKE A FUCTION THAT CLICK IT CREATE AN ACCOUNT EXAMPLE:
+
+document.getElementById("registerBtn").addEventListener("click", async () => {
+      const lrn      = document.getElementById("lrn").value.trim();
+      const name     = document.getElementById("name").value.trim();
+      const email    = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const msg      = document.getElementById("msg");
+
+});
+
+|
+|
+|
+
+
+
+
+
+
+
+
+
+          
