@@ -1,72 +1,78 @@
-I NEED TO LEARN THIS FOR UPDATING THE NEGROS ORIENTAL HIGH SCHOOL ENROLMENT SYSTEM 
-AND MORE LOG IN AND SIGN UP AUTHENCATION AND NOW I DOCUMENTARY AND POST MY MAKING AFTER I COMPLETE ON LEARNING ON THIS
-
-1. LOG-IN FIRST IN FIREBASE AND SET UP THIS THINGS
-  - YOU NEED TO CLICK THE AUTHENCATION 
-  - THEN GO TO THE Project Overview THEN PRESS THE Add app THEN SELECT THE WEB OR WEB APP 
-  - THEN MAKE A NAME THEN YOU CAN PASTE THE SCRIPT TAG OF THE FIREBASE AND PASTE ON THE JS FILE 
-
-FILE MANAGEMENT example:
-
-PROJECT FILE
-          |
-          firebase.js
-          log-in.html
-          sign-up.html
-          dashboard.html
-
-2. PASTE THE SCRIPT MODULE ON THE firebase.js
-  - EACH FILE PASTE THIS 
-
-<script type="module">
-  import { auth, db } from "./firebase.js"; // now auth and db are ready to use
-</script>
-
-3. THEN GO TO THE AUTHECATION CENTER THEN GO TO THE SIGN-IN METHOD THEN SELECT THE EMIAL/PASSWORD THEN 
-   ENABLE ONLY THE EMAIL/PASSWORD ON THE UP THEN ALWAYS DIABLE THE EMAIL/LINK BECAUSE THIS IS ONLY A PRACTICE 
-
-4. THEN SAME IN AUTHENCATION GO TO THE SETTING AND GO DOWNA AND PRESS THE AUTHORIZE DOMAIN AND PASTE THIS 127.0.0.1
-
-5. THEN CODE NOW THEN LOGIC IS LIKE THIS FOR ME 
-
-MAKE AN INPUT 
-
-|
-|
-|
-
-MAKE AND BOX FOR ERRORS
-
-|
-|
-|
-
-IMPORT THIS BECAUSE ITS NESSEARY IMPORT
-
-import { auth, db } from "./firebase.js";
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
-
-|
-|
-|
-
-THEN MAKE A FUCTION THAT CLICK IT CREATE AN ACCOUNT EXAMPLE:
-
-document.getElementById("registerBtn").addEventListener("click", async () => {
-      const lrn      = document.getElementById("lrn").value.trim();
-      const name     = document.getElementById("name").value.trim();
-      const email    = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const msg      = document.getElementById("msg");
-
-});
-
-|
-|
-|
+STEP 1 — Create a Firebase Project
+  1.Go to https://console.firebase.google.com
+  2.Sign in with your Google/Gmail account
+  3.Click "Add project"
+  4.Type a project name (example: school-lrn-app)
+  5.Turn OFF Google Analytics (you don't need it)
+  6.Click "Create project"
+  7. Wait about 10 seconds for it to finish
 
 
+STEP 2 — Register a Web App - After your project is created, you'll see the dashboard.
+  1.Click the </> icon (this is the Web icon)
+  2.Give your app a nickname (example: school-web)
+  3.Leave "Firebase Hosting" unchecked
+  4.Click "Register app"
+  5.Firebase will show you a block of code that starts with:
+          ________________________________________
+          js   const firebaseConfig = { ... }    
+          ________________________________________
+                                                
+  6.Copy this config — you will paste it into your HTML file
+
+
+STEP 3 — Enable Email/Password Login
+  1.In the left sidebar, click "Authentication"
+  2.Click "Get started"
+  3.Click "Sign-in method" tab
+  4.Click "Email/Password"
+  5.Toggle the FIRST switch to ON (blue)
+  6.Leave the second switch (Email link) OFF
+  7.Click "Save"
+  8.This tells Firebase: "Yes, allow users to sign up with email and password."
+
+
+STEP 4 — Create Firestore Database
+  1.In the left sidebar, click "Firestore Database"
+  2.Click "Create database"
+  3.Choose "Start in test mode" (allows reading/writing for 30 days)
+  4.Choose server location: asia-southeast1 (Singapore)
+  5.Choose this if you are in the Philippines — it's the closest
+  6.Click "Enable"
+  7.Wait for it to finish — you'll see an empty database panel
+
+STEP 5 — Set Firestore Security Rules
+  1.Inside Firestore Database, click the "Rules" tab
+  2.Replace everything with this:
+
+____________________________________________
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+
+____________________________________________
+
+  3.Click "Publish"
+  What this rule means:
+    - Only logged-in users can read or write data
+    - People who are NOT logged in cannot touch the database
+
+
+STEP 6 — Add Your Domain to Authorized List
+  1,Because you are testing on your computer (localhost),
+  2.Firebase needs to know your local address is safe.
+  3.Go to Authentication → Settings tab
+  4.Scroll down to "Authorized domains"
+    - Click "Add domain"
+    - Type: 127.0.0.1
+    - Click "Add"
+  5.This tells Firebase: "Trust requests coming from my computer."
 
 
 
@@ -74,4 +80,30 @@ document.getElementById("registerBtn").addEventListener("click", async () => {
 
 
 
-          
+
+_______________________________________________________________________________________________
+
+THE TOOLS WE IMPORT AND WHAT THEY DO
+
+initializeApp          // Starts Firebase using your config
+
+// FROM firebase-auth.js
+
+getAuth                // Gets the Auth tool
+createUserWithEmailAndPassword  // Creates a new account
+signInWithEmailAndPassword      // Logs in an existing account
+signOut                // Logs out the current user
+onAuthStateChanged     // Watches if someone is logged in or not
+
+// FROM firebase-firestore.js
+
+getFirestore           // Gets the Database tool
+doc                    // Points to a specific document location
+setDoc                 // Writes/saves data to Firestore
+getDoc                 // Reads one document from Firestore
+collection             // Points to a group of documents
+query                  // Prepares a search
+where                  // The search condition (example: where lrn == "123")
+getDocs                // Runs the search and returns results
+  
+
