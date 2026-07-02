@@ -8,7 +8,7 @@ STEP 1 — Create a Firebase Project
   7. Wait about 10 seconds for it to finish
 
 
-STEP 2 — Register a Web App - After your project is created, you'll see the dashboard.
+STEP 2 — Register a Web App - After your project is created, you'll see the dashboard and clickt the add app.
   1.Click the </> icon (this is the Web icon)
   2.Give your app a nickname (example: school-web)
   3.Leave "Firebase Hosting" unchecked
