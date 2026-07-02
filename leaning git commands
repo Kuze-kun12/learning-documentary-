@@ -1,1 +1,205 @@
 
+# Git & GitHub Commands
+
+Step 1 - Go to your project folder
+cd ~/path/"name of your folder"
+
+
+## Step 2 - Create a README file (optional)
+
+
+touch README.md
+```
+
+## Step 3 - Initialize Git
+
+```bash
+git init
+```
+
+## Step 4 - Add all files and folders
+
+```bash
+git add .
+```
+
+## Step 5 - Create your first commit
+
+```bash
+git commit -m "Initial commit"
+```
+
+## Step 6 - Rename the branch to `main`
+
+```bash
+git branch -M main
+```
+
+## Step 7 - Connect your GitHub repository
+
+```bash
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+```
+
+> If `origin` already exists:
+
+```bash
+git remote remove origin
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+```
+
+## Step 8 - Upload your project to GitHub
+
+```bash
+git push -u origin main
+```
+
+---
+
+# Update Your Project
+
+## Stage all changes
+
+```bash
+git add .
+```
+
+## Commit your changes
+
+```bash
+git commit -m "Describe your changes"
+```
+
+## Push the changes
+
+```bash
+git push
+```
+
+---
+
+# Remove a File
+
+```bash
+git rm filename.txt
+git commit -m "Remove filename.txt"
+git push
+```
+
+---
+
+# Remove a Folder
+
+```bash
+git rm -r folder_name
+git commit -m "Remove folder_name"
+git push
+```
+
+---
+
+# Keep a File on Your Computer but Remove It from GitHub
+
+```bash
+git rm --cached filename.txt
+git commit -m "Stop tracking filename.txt"
+git push
+```
+
+---
+
+# Keep a Folder on Your Computer but Remove It from GitHub
+
+```bash
+git rm -r --cached folder_name
+git commit -m "Stop tracking folder_name"
+git push
+```
+
+---
+
+# Check Repository Status
+
+```bash
+git status
+```
+
+---
+
+# View Commit History
+
+```bash
+git log
+```
+
+---
+
+# View Configured Remote Repository
+
+```bash
+git remote -v
+```
+
+---
+
+# Clone an Existing GitHub Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+```
+
+---
+
+# Pull the Latest Changes from GitHub
+
+```bash
+git pull origin main
+```
+
+---
+
+# View Available Branches
+
+```bash
+git branch
+```
+
+---
+
+# Create a New Branch
+
+```bash
+git checkout -b branch_name
+```
+
+---
+
+# Switch to Another Branch
+
+```bash
+git checkout branch_name
+```
+
+---
+
+# Merge a Branch into the Current Branch
+
+```bash
+git merge branch_name
+```
+
+---
+
+# Delete a Local Branch
+
+```bash
+git branch -d branch_name
+```
+
+---
+
+# Delete a Remote Branch
+
+```bash
+git push origin --delete branch_name
+```
