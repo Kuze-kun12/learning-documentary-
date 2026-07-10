@@ -1,0 +1,138 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ═══════════════════════════════════════════
+    // 🔧 HELPER FUNCTIONS (reused everywhere below)
+    // ═══════════════════════════════════════════
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && getUserData().role == "admin";
+    }
+
+    function isVerifiedEmail() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    // Checks that incoming data only contains allowed fields (prevents injection of extra fields)
+    function onlyContainsFields(allowedFields) {
+      return request.resource.data.keys().hasOnly(allowedFields);
+    }
+
+    // Checks required fields are present
+    function hasRequiredFields(requiredFields) {
+      return request.resource.data.keys().hasAll(requiredFields);
+    }
+
+    // Prevents users from editing fields that should never change after creation
+    function fieldsUnchanged(fields) {
+      return fields.toSet().difference(request.resource.data.diff(resource.data).affectedKeys()).size() == fields.size();
+    }
+
+    // Basic size guard against abuse (e.g. someone pasting a huge string)
+    function isReasonableSize(field, maxChars) {
+      return request.resource.data[field] is string
+             && request.resource.data[field].size() <= maxChars;
+    }
+
+
+    // ═══════════════════════════════════════════
+    // 👤 USERS — each user owns their own profile
+    // ═══════════════════════════════════════════
+    match /users/{uid} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(uid)
+                    && hasRequiredFields(["email", "createdAt"])
+                    && request.resource.data.role == "member"; // force default role, prevent self-promotion to admin
+
+      allow update: if isOwner(uid)
+                    && fieldsUnchanged(["role", "createdAt", "uid"]); // can't touch these once set
+
+      allow delete: if isOwner(uid);
+    }
+
+
+    // ═══════════════════════════════════════════
+    // 🔍 LOOKUP TABLES (e.g. schoolId → uid mapping)
+    // ═══════════════════════════════════════════
+    match /schoolIdLookup/{schoolId} {
+      allow read: if true; // must be open — used pre-login
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isSignedIn()
+                             && resource.data.uid == request.auth.uid;
+    }
+
+
+    // ═══════════════════════════════════════════
+    // 📝 USER-OWNED CONTENT (posts, comments, notes)
+    // ═══════════════════════════════════════════
+    match /posts/{postId} {
+      allow read: if isSignedIn();
+
+      allow create: if isSignedIn()
+                    && request.resource.data.authorId == request.auth.uid
+                    && hasRequiredFields(["authorId", "content", "createdAt"])
+                    && isReasonableSize("content", 5000);
+
+      allow update: if isSignedIn()
+                    && resource.data.authorId == request.auth.uid
+                    && fieldsUnchanged(["authorId", "createdAt"]); // can edit content, not who/when it was created
+
+      allow delete: if isSignedIn()
+                    && (resource.data.authorId == request.auth.uid || isAdmin());
+    }
+
+
+    // ═══════════════════════════════════════════
+    // 🧵 SUBCOLLECTIONS (e.g. comments under a post)
+    // ═══════════════════════════════════════════
+    match /posts/{postId}/comments/{commentId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+                    && request.resource.data.authorId == request.auth.uid;
+      allow update, delete: if isSignedIn()
+                            && resource.data.authorId == request.auth.uid;
+    }
+
+
+    // ═══════════════════════════════════════════
+    // 📢 ADMIN-ONLY CONTENT (announcements, events)
+    // ═══════════════════════════════════════════
+    match /announcements/{id} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+
+    // ═══════════════════════════════════════════
+    // 🔒 PRIVATE USER DATA (settings, tokens, drafts)
+    // Nobody but the owner can even READ this — not even other members
+    // ═══════════════════════════════════════════
+    match /users/{uid}/private/{docId} {
+      allow read, write: if isOwner(uid);
+    }
+
+
+    // ═══════════════════════════════════════════
+    // 🚫 DEFAULT DENY — critical safety net
+    // Anything not explicitly matched above is blocked.
+    // ═══════════════════════════════════════════
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
