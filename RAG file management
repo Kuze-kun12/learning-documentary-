@@ -1,0 +1,39 @@
+rag-project/
+├── data/
+│   ├── raw/                  # source docs (pdf, txt, md)
+│   ├── processed/            # cleaned & chunked text
+│   └── metadata.json         # doc IDs, source tracking
+│
+├── src/
+│   ├── ingestion/
+│   │   ├── loadDocs.js       # reads files from data/raw
+│   │   ├── chunkText.js      # splits into overlapping chunks
+│   │   └── embedAndStore.js  # generates embeddings → vector store
+│   │
+│   ├── vectorstore/
+│   │   └── store.js          # connects to Chroma/Pinecone/Firestore
+│   │
+│   ├── retrieval/
+│   │   └── retriever.js      # similarity search (top-k chunks)
+│   │
+│   ├── generation/
+│   │   ├── promptTemplate.js # builds final prompt w/ retrieved context
+│   │   └── llmClient.js      # calls Groq/Claude API
+│   │
+│   └── server.js             # Express app, wires everything together
+│
+├── routes/
+│   └── query.js              # POST /api/query → retrieve + generate + respond
+│
+├── public/                   # served via express.static()
+│   ├── index.html
+│   ├── style.css
+│   └── chat.js                # fetch() calls to /api/query
+│
+├── scripts/
+│   └── buildIndex.js         # run once: ingest docs → populate vector store
+│
+├── .env                       # API keys, vector DB config
+├── .gitignore
+├── package.json
+└── README.md
