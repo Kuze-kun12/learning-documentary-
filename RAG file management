@@ -1,39 +1,49 @@
-rag-project/
+FILE MANAGEMENT STRUCTURE
+
+roject/
 ├── data/
-│   ├── raw/                  # source docs (pdf, txt, md)
-│   ├── processed/            # cleaned & chunked text
-│   └── metadata.json         # doc IDs, source tracking
+│   ├── raw/                   # source docs (pdf, txt, md)
+│   ├── processed/             # cleaned & chunked text
+│   └── metadata.json          # doc IDs, source tracking
 │
-├── src/
+├── src/                        # everything the SERVER owns
+│   ├── server.js               # entry point — starts Express, mounts routes
+│   │
+│   ├── routes/
+│   │   └── query.js            # POST /api/query → retrieve + generate + respond
+│   │
 │   ├── ingestion/
-│   │   ├── loadDocs.js       # reads files from data/raw
-│   │   ├── chunkText.js      # splits into overlapping chunks
-│   │   └── embedAndStore.js  # generates embeddings → vector store
+│   │   ├── loadDocs.js         # reads files from data/raw
+│   │   ├── chunkText.js        # splits into overlapping chunks
+│   │   └── embedAndStore.js    # generates embeddings → vector store
 │   │
 │   ├── vectorstore/
-│   │   └── store.js          # connects to Chroma/Pinecone/Firestore
+│   │   └── store.js            # connects to Chroma/Pinecone/Firestore
 │   │
 │   ├── retrieval/
-│   │   └── retriever.js      # similarity search (top-k chunks)
+│   │   └── retriever.js        # similarity search (top-k chunks)
 │   │
-│   ├── generation/
-│   │   ├── promptTemplate.js # builds final prompt w/ retrieved context
-│   │   └── llmClient.js      # calls Groq/Claude API
-│   │
-│   └── server.js             # Express app, wires everything together
+│   └── generation/
+│       ├── promptTemplate.js   # builds final prompt w/ retrieved context
+│       └── llmClient.js        # calls Groq/Claude API
 │
-├── routes/
-│   └── query.js              # POST /api/query → retrieve + generate + respond
-│
-├── public/                   # served via express.static()
+├── public/                     # everything the BROWSER owns, served via express.static()
 │   ├── index.html
 │   ├── style.css
-│   └── chat.js                # fetch() calls to /api/query
+│   ├── chat.js                 # fetch() calls to /api/query — no API keys here, ever
+│   └── assets/
+│       ├── fonts/
+│       │   ├── Inter-Regular.woff2
+│       │   └── Inter-Bold.woff2
+│       └── images/
+│           ├── logo.svg
+│           ├── favicon.ico
+│           └── bg-pattern.png
 │
 ├── scripts/
-│   └── buildIndex.js         # run once: ingest docs → populate vector store
+│   └── buildIndex.js           # run once (or on doc updates): ingest → populate vector store
 │
-├── .env                       # API keys, vector DB config
+├── .env                         # API keys, vector DB config — used ONLY inside src/
 ├── .gitignore
 ├── package.json
 └── README.md
